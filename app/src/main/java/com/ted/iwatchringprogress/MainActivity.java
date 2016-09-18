@@ -12,5 +12,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         PathPractise pp= new PathPractise(this);
         setContentView(pp);
+        pp.startAnim(1000);// 1 sec
     }
 }

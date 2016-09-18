@@ -1,5 +1,6 @@
 package com.ted.demo;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 /**
  * Copyright (C) 2008 The Android Open Source Project
@@ -34,6 +36,8 @@ public class PathPractise extends View {
     Paint mPaint;
     Path mPath;
     RectF mRect;
+
+    float mAnimatiorValue = 1f;
 
     public PathPractise(Context context) {
         this(context, null);
@@ -89,15 +93,23 @@ public class PathPractise extends View {
         //paint.setColor(Color.rgb(86, 171, 228));
         LinearGradient lg = new LinearGradient(
                 mRect.left,mRect.top,mRect.right,mRect.top,
-                new int[]{Color.rgb(86, 171, 228), Color.argb(50, 86, 171, 228)},
+                new int[]{Color.rgb(157, 85, 184), Color.argb(255, 157, 85, 184)},
                 new float[]{0f,1f},
                 Shader.TileMode.CLAMP);
         paint.setShader(lg);
         setPaintUnifyProper(paint);
 
         mPath.reset();
-        mPath.addArc(mRect,-90,180);
+        mPath.addArc(mRect,-90,180 * mAnimatiorValue);
         canvas.drawPath(mPath,paint);
+
+        /*paint.reset();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.rgb(0,0,0));
+        paint.setTextSize(20);
+        canvas.drawTextOnPath("Test 1", mPath, 10, 7.5f, paint);
+        canvas.drawTextOnPath("1000000000", mPath, 200, 7.5f, paint);*/
     }
 
     private void setPaintUnifyProper(Paint paint) {
@@ -112,4 +124,26 @@ public class PathPractise extends View {
         return super.onTouchEvent(event);
     }
 
+    public void startAnim(int i) {
+        startViewAnima(0f, 1f, i);
+    }
+
+    private void startViewAnima(float start, float end, int duration){
+
+        final ValueAnimator va = ValueAnimator.ofFloat(start, end);
+        va.setDuration(duration);
+        va.setRepeatCount(0);
+        va.setInterpolator(new LinearInterpolator());
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mAnimatiorValue = (float)animation.getAnimatedValue();
+                invalidate();
+            }
+        });
+
+        if (!va.isRunning()){
+            va.start();
+        }
+    }
 }
