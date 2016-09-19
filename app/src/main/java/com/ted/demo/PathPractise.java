@@ -2,6 +2,7 @@ package com.ted.demo;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -13,6 +14,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+
+import com.ted.iwatchringprogress.R;
 
 /**
  * Copyright (C) 2008 The Android Open Source Project
@@ -39,12 +42,36 @@ public class PathPractise extends View {
 
     float mAnimatiorValue = 1f;
 
+    private int mBGColor;
+    private int mBGArc;
+    private int mFGStartColor;
+    private int mFGEndColor;
+    private int mFGArc;
+
     public PathPractise(Context context) {
         this(context, null);
     }
 
     public PathPractise(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
+    }
+
+    public PathPractise(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.PathPractise);
+        if (typedArray != null){
+            mBGArc = typedArray.getInteger(R.styleable.PathPractise_bgArc,180);
+            mBGColor = typedArray.getColor(R.styleable.PathPractise_bgColor,Color.WHITE);
+            mFGStartColor = typedArray.getColor(R.styleable.PathPractise_fgStartColor, Color.WHITE);
+            mFGEndColor = typedArray.getColor(R.styleable.PathPractise_fgEndColor, Color.WHITE);
+            mFGArc = typedArray.getInteger(R.styleable.PathPractise_fgArc,90);
+
+            typedArray.recycle();
+        }
     }
 
     @Override
@@ -79,11 +106,11 @@ public class PathPractise extends View {
     private void drawBG(Canvas canvas, Paint paint) {
 
         paint.reset();
-        paint.setColor(Color.rgb(141,141,141));
+        paint.setColor(mBGColor);
         setPaintUnifyProper(paint);
 
         mPath.reset();
-        mPath.addArc(mRect,-90,270);
+        mPath.addArc(mRect,-90,mBGArc);
         canvas.drawPath(mPath,paint);
     }
 
@@ -93,14 +120,14 @@ public class PathPractise extends View {
         //paint.setColor(Color.rgb(86, 171, 228));
         LinearGradient lg = new LinearGradient(
                 mRect.left,mRect.top,mRect.right,mRect.top,
-                new int[]{Color.rgb(157, 85, 184), Color.argb(255, 157, 85, 184)},
+                new int[]{mFGStartColor, mFGEndColor},
                 new float[]{0f,1f},
                 Shader.TileMode.CLAMP);
         paint.setShader(lg);
         setPaintUnifyProper(paint);
 
         mPath.reset();
-        mPath.addArc(mRect,-90,180 * mAnimatiorValue);
+        mPath.addArc(mRect,-90,mFGArc * mAnimatiorValue);
         canvas.drawPath(mPath,paint);
 
         /*paint.reset();

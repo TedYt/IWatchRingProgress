@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <declare-styleable name="PathPractise">
+        <attr name="bgColor" format="color|reference"/>
+        <attr name="bgArc" format="integer|reference"/>
+        <attr name="fgStartColor" format="color|reference"/>
+        <attr name="fgEndColor" format="color|reference"/>
+        <attr name="fgArc" format="integer|reference"/>
+    </declare-styleable>
 </resources>
